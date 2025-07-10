@@ -1,4 +1,4 @@
-package lol.hub.safetpa;
+package lol.hub.hubtpa;
 
 import org.bukkit.entity.Player;
 

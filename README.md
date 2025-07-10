@@ -1,4 +1,4 @@
-# SafeTPA
+# HubTPA
 
 Minecraft self-service teleport requests
 

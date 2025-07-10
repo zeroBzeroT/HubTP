@@ -1,4 +1,4 @@
-package lol.hub.safetpa.util;
+package lol.hub.hubtpa.util;
 
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;

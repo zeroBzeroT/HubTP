@@ -1,9 +1,14 @@
-package lol.hub.safetpa;
+package lol.hub.hubtpa;
 
-import lol.hub.safetpa.commands.*;
+import com.tcoded.folialib.FoliaLib;
+import com.tcoded.folialib.impl.ServerImplementation;
+import de.myzelyam.api.vanish.VanishAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import lol.hub.hubtpa.bstats.bukkit.Metrics;
+import lol.hub.hubtpa.commands.*;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -14,20 +19,34 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Plugin extends JavaPlugin {
+    FoliaLib foliaLib;
     public static final String BLOCKED_PREFIX = "requests-blocked-";
-    private final Map<String, TpCommand> commands = new HashMap<>();
+    private static final Predicate<Server> superVanishLoaded = (server) -> {
+        return server.getPluginManager().isPluginEnabled("SuperVanish") || server.getPluginManager().isPluginEnabled("PremiumVanish");
+    };
+    private final Map<String, TpCommand> commands = new HashMap();
+
+    public ServerImplementation getScheduler() {
+        return this.foliaLib.getImpl();
+    }
+
+    public void onLoad() {
+        this.foliaLib = new FoliaLib(this);
+    }
 
     private static boolean shouldTpLeashed(Entity playerA, Entity playerB) {
-        //Checks if the dimension is the same, otherwise checks if interdimensional leash tp is allowed
         return playerA.getWorld().getEnvironment() == playerB.getWorld().getEnvironment() || Config.includeLeashedInterdimensional();
     }
 
@@ -44,9 +63,10 @@ public class Plugin extends JavaPlugin {
             .collect(Collectors.toUnmodifiableSet());
     }
 
-    @Override
     public void onEnable() {
-        Log.set(getLogger());
+        Log.set(this.getLogger());
+
+        new Metrics(this, 11798);
 
         Config.load(this);
 
@@ -70,7 +90,7 @@ public class Plugin extends JavaPlugin {
             }
         }, this);
 
-        getServer().getScheduler().runTaskTimer(this, this::clearOldRequests, 20, 20);
+        this.getScheduler().runTimer(this::clearOldRequests, 20L, 20L);
     }
 
     @Override
@@ -101,48 +121,36 @@ public class Plugin extends JavaPlugin {
     }
 
     public void executeTP(Player tpTarget, Player tpRequester) {
-        if (tpTarget == null || tpRequester == null) {
-            return;
-        }
+        if (tpTarget != null && tpRequester != null) {
+            if (tpTarget.getVehicle() == null && tpRequester.getVehicle() == null) {
+                int tpDelay = Config.tpDelaySeconds();
+                if (tpDelay > 0) {
+                    tpTarget.sendMessage(((TextComponent) ((TextComponent) ((TextComponent) Component.text("Teleporting ", NamedTextColor.GOLD).append(Component.text(tpRequester.getName()))).append(Component.text(" in ", NamedTextColor.GOLD))).append(Component.text(tpDelay))).append(Component.text(" seconds...", NamedTextColor.GOLD)));
+                    tpRequester.sendMessage(((TextComponent) Component.text("Teleporting in ", NamedTextColor.GOLD).append(Component.text(tpDelay))).append(Component.text(" seconds...", NamedTextColor.GOLD)));
+                    this.getScheduler().runLaterAsync(() -> {
+                        if (RequestManager.isRequestActive(tpTarget, tpRequester)) {
+                            this.executeTPMove(tpTarget, tpRequester);
+                        }
 
-        // deny mounted target or requester
-        if (tpTarget.getVehicle() != null || tpRequester.getVehicle() != null) {
-            TextComponent msg = Component.text("Teleport failed!", NamedTextColor.RED);
-            tpTarget.sendMessage(msg);
-            tpRequester.sendMessage(msg);
-            return;
-        }
+                    }, (long) tpDelay * 20L);
+                } else {
+                    this.executeTPMove(tpTarget, tpRequester);
+                }
 
-        int tpDelay = Config.tpDelaySeconds();
-        if (tpDelay > 0) {
-            tpTarget.sendMessage(
-                Component.text("Teleporting ", NamedTextColor.GOLD)
-                    .append(Component.text(tpRequester.getName()))
-                    .append(Component.text(" in ", NamedTextColor.GOLD))
-                    .append(Component.text(tpDelay))
-                    .append(Component.text(" seconds...", NamedTextColor.GOLD)));
-            tpRequester.sendMessage(
-                Component.text("Teleporting in ", NamedTextColor.GOLD)
-                    .append(Component.text(tpDelay))
-                    .append(Component.text(" seconds...", NamedTextColor.GOLD)));
-
-            int taskId = getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
-                if (RequestManager.isRequestActive(tpTarget, tpRequester)) executeTPMove(tpTarget, tpRequester);
-            }, tpDelay * 20L);
-
-            if (taskId == -1) {
-                // TODO: handle error case: scheduling failed
+            } else {
+                TextComponent msg = Component.text("Teleport failed!", NamedTextColor.RED);
+                tpTarget.sendMessage(msg);
+                tpRequester.sendMessage(msg);
             }
-        } else {
-            executeTPMove(tpTarget, tpRequester);
         }
     }
 
     public void executeTPMove(Player tpTarget, Player tpRequester) {
-        Log.info("Teleporting " + tpRequester.getName() + " to " + tpTarget.getName());
-
-        // TODO: Write flag to player nbt in case some exploit prevents
-        //  the unvanish, so we can do the unvanish on the next login.
+        String var10000 = tpRequester.getName();
+        Log.info("Teleporting " + var10000 + " to " + tpTarget.getName());
+        if (superVanishLoaded.test(this.getServer())) {
+            VanishAPI.hidePlayer(tpRequester);
+        }
 
         if (Config.includeLeashed() && shouldTpLeashed(tpTarget, tpRequester)) {
             tpRequester.getWorld()
@@ -172,15 +180,17 @@ public class Plugin extends JavaPlugin {
                 }
             })
             .thenAccept(ignored -> {
-                getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
-                    // TODO: unvanish requester
-                }, Config.unvanishDelayTicks());
+                this.getScheduler().runLater(() -> {
+                    if (superVanishLoaded.test(this.getServer())) {
+                        VanishAPI.showPlayer(tpRequester);
+                    }
+                }, (long) Config.unvanishDelayTicks());
             });
     }
 
     public boolean isRequestBlock(Player player) {
-        // TODO: stop doing this, use player metadata or sqlite instead
-        return getConfig().getBoolean(BLOCKED_PREFIX + player.getUniqueId());
+        return this.getConfig().getBoolean("requests-blocked-" + player.getUniqueId());
     }
+
 
 }

@@ -1,6 +1,6 @@
-package lol.hub.safetpa.util;
+package lol.hub.hubtpa.util;
 
-import lol.hub.safetpa.Config;
+import lol.hub.hubtpa.Config;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;

@@ -1,4 +1,4 @@
-package lol.hub.safetpa;
+package lol.hub.hubtpa;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

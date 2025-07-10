@@ -1,10 +1,12 @@
 plugins {
     id 'java'
     id 'xyz.jpenilla.run-paper' version '2.3.0'
+    id 'io.github.goooler.shadow' version '8.1.7'
 }
 
 group = 'lol.hub'
-version = '4.0.0-INDEV'
+version = '4.0.1'
+description = 'Minecraft self-service teleport requests'
 
 repositories {
     mavenCentral()
@@ -12,15 +14,33 @@ repositories {
         url = 'https://repo.papermc.io/repository/maven-public/'
         content {
             includeGroup 'com.mojang'
+            includeGroup 'dev.folia'
             includeGroup 'io.papermc.paper'
             includeGroup 'net.kyori'
             includeGroup 'net.md-5'
         }
     }
+    maven {
+        // FoliaLib
+        url = 'https://nexuslite.gcnt.net/repos/other/'
+        content {
+            includeGroup 'com.tcoded'
+        }
+    }
 }
 
 dependencies {
+    // paper api
+    // https://jd.papermc.io/paper/1.20/
     compileOnly group: 'io.papermc.paper', name: 'paper-api', version: "${project.minecraft_version}-R0.1-SNAPSHOT"
+
+    // folia api
+    // https://jd.papermc.io/folia/1.20/
+    //compileOnly group: 'dev.folia', name: 'folia-api', version: "${project.minecraft_version}-R0.1-SNAPSHOT"
+
+
+    // https://github.com/TechnicallyCoded/FoliaLib
+    shadow group: 'com.tcoded', name: 'FoliaLib', version: "0.3.4"
 }
 
 java {
@@ -36,7 +56,13 @@ processResources {
     filteringCharset "UTF-8"
     filesMatching("plugin.yml") {
         filter { line -> line.replace("@VERSION@", project.version) }
+        filter { line -> line.replace("@DESCRIPTION@", project.description) }
     }
+}
+
+shadowJar {
+    relocate("com.tcoded.folialib", "hub.lol.lib.folialib")
+    //relocate("de.myzelyam.api", "hub.lol.lib.api")
 }
 
 tasks {

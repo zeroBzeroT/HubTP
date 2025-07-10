@@ -1,10 +1,10 @@
-name: "SafeTPA"
-version: "@VERSION@"
-description: "Minecraft self-service teleport requests"
-website: "https://github.com/nothub/SafeTPA/"
+name: HubTPA
+version: @VERSION@
+description: @DESCRIPTION@
+website: "https://github.com/zeroBzeroT/HubTPA/"
 author: 'nothub'
-authors: [ 'AlexProgrammerDE', 'MaybeEther', 'SooStrator' ]
-main: 'lol.hub.safetpa.Plugin'
+authors: [ 'AlexProgrammerDE', 'MaybeEther', 'SooStrator', 'bierdosenhalter' ]
+main: 'lol.hub.hubtpa.Plugin'
 api-version: '1.20'
 
 commands:

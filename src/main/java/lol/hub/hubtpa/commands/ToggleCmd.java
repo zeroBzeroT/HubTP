@@ -1,14 +1,14 @@
-package lol.hub.safetpa.commands;
+package lol.hub.hubtpa.commands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import lol.hub.safetpa.Plugin;
-import lol.hub.safetpa.RequestManager;
+import lol.hub.hubtpa.Plugin;
+import lol.hub.hubtpa.RequestManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
-import static lol.hub.safetpa.Plugin.BLOCKED_PREFIX;
+import static lol.hub.hubtpa.Plugin.BLOCKED_PREFIX;
 
 // tpt (tptoggle)
 public class ToggleCmd extends TpCommand {
