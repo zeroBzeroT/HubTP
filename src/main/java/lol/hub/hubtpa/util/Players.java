@@ -7,18 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 public class Players {
-
-    private static final Pattern pattern = Pattern.compile("^[a-zA-Z0-9_]{1,16}$");
-
-    public static boolean validName(String name) {
-        if (name == null) {
-            return false;
-        }
-        return pattern.matcher(name).matches();
-    }
 
     public static Player getOnlinePlayer(Server server, String name) {
         return server.getOnlinePlayers().stream().filter(p -> p.getName().equals(name)).findAny().orElse(null);

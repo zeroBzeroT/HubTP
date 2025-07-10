@@ -1,9 +1,9 @@
 package lol.hub.hubtpa;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -70,15 +70,6 @@ public class RequestManager {
     public static boolean isRequestActive(Player target, Player requester) {
         for (Request request : pendingRequests.keySet()) {
             if (request.isSamePlayers(target, requester)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean isRequestActiveByTarget(Player target) {
-        for (Request request : pendingRequests.keySet()) {
-            if (request.target().uuid().equals(target.getUniqueId())) {
                 return true;
             }
         }
