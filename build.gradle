@@ -39,7 +39,7 @@ dependencies {
     //compileOnly group: 'dev.folia', name: 'folia-api', version: "${project.minecraft_version}-R0.1-SNAPSHOT"
 
     // https://github.com/TechnicallyCoded/FoliaLib
-    shadow group: 'com.tcoded', name: 'FoliaLib', version: "0.3.4"
+    shadow group: 'com.tcoded', name: 'FoliaLib', version: "0.4.2"
 
     // Other dependencies
     shadow 'org.bstats:bstats-bukkit:3.0.0'
