@@ -93,7 +93,6 @@ public final class Config {
 
         debug = config.getBoolean("debug");
 
-
         initialized = true;
     }
 

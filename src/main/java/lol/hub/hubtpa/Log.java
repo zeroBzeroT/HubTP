@@ -19,8 +19,8 @@ public class Log {
         logger.warning(msg);
     }
 
-    public static void error(String msg) {
-        logger.severe(msg);
+    public static void error(Exception e) {
+        logger.severe(e.getMessage());
     }
 
     public static void set(@NotNull Logger logger) {

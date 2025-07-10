@@ -30,7 +30,7 @@ public abstract class TpCommand {
             pluginCommand.getUsage());
     }
 
-    public abstract boolean run(Player commandSender, String targetName);
+    public abstract void run(Player commandSender, String targetName);
 
     public void sendUsage(Player player) {
         player.sendMessage(usage);

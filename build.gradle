@@ -68,7 +68,7 @@ shadowJar {
     archiveFileName = "${project.name}-${project.version}+${project.minecraft_version}.jar"
     destinationDirectory = layout.buildDirectory.dir('dist')
 
-    relocate 'com.tcoded',          'com.krazzzzymonkey.cloudanarchycore.shaded.tcoded'
+    relocate 'com.tcoded', 'com.krazzzzymonkey.cloudanarchycore.shaded.tcoded'
 
     // delete unshaded jar
     doLast {

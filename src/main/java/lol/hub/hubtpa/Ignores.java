@@ -32,7 +32,7 @@ public final class Ignores {
         } catch (FileNotFoundException | NoSuchFileException ex) {
             return new HashSet<>(1);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Log.error(ex);
             return new HashSet<>(1);
         }
     }
@@ -47,7 +47,7 @@ public final class Ignores {
         try {
             Files.writeString(path, json);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Log.error(ex);
         }
     }
 

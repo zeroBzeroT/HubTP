@@ -16,7 +16,7 @@ public class ToggleCmd extends TpCommand {
     }
 
     @Override
-    public boolean run(Player commandSender, String ignored) {
+    public void run(Player commandSender, String ignored) {
         if (plugin.isRequestBlock(commandSender)) {
             plugin.getConfig().set(BLOCKED_PREFIX + commandSender.getUniqueId(), null); // if toggle is getting turned off, we delete instead of setting false
             commandSender.sendMessage(
@@ -33,8 +33,7 @@ public class ToggleCmd extends TpCommand {
                     .append(Component.text("!", NamedTextColor.GOLD))
             );
         }
-        plugin.saveConfig();
-        return true;
-    }
 
+        plugin.saveConfig();
+    }
 }

@@ -107,7 +107,8 @@ public class Plugin extends JavaPlugin {
             return true;
         }
 
-        return commands.get(commandLabel).run(sender, targetName);
+        commands.get(commandLabel).run(sender, targetName);
+        return true;
     }
 
     public void clearOldRequests() {
@@ -140,8 +141,8 @@ public class Plugin extends JavaPlugin {
     }
 
     public void executeTPMove(Player tpTarget, Player tpRequester) {
-        String var10000 = tpRequester.getName();
-        Log.info("Teleporting " + var10000 + " to " + tpTarget.getName());
+        String requesterName = tpRequester.getName();
+        Log.info("Teleporting " + requesterName + " to " + tpTarget.getName());
 
         if (Config.includeLeashed() && shouldTpLeashed(tpTarget, tpRequester)) {
             tpRequester.getWorld()

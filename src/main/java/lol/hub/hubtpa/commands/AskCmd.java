@@ -15,25 +15,34 @@ public class AskCmd extends TpCommand {
     }
 
     @Override
-    public boolean run(Player commandSender, String targetName) {
+    public void run(Player commandSender, String targetName) {
         var target = Players.getOnlinePlayer(plugin.getServer(), targetName);
         if (target == null) {
             commandSender.sendMessage(Component.text("Player not found.", NamedTextColor.GOLD));
-            return true;
+            return;
         }
 
         if (Ignores.get(target.getUniqueId(), commandSender.getUniqueId())) {
             commandSender.sendMessage(
-                Component.text(target.getName()).append(Component.text(" is ignoring your tpa requests!"))
+                Component.text(target.getName()).append(Component.text(" is ignoring your tpa requests!", NamedTextColor.GOLD))
             );
+            return;
+        }
+
+        if (Ignores.get(commandSender.getUniqueId(), target.getUniqueId())) {
+            commandSender.sendMessage(
+                Component.text("You are ignoring ", NamedTextColor.GOLD).append(Component.text(target.getName()))
+                    .append(Component.text(". Cannot send teleport requests.", NamedTextColor.GOLD))
+            );
+            return;
         }
 
         if (Config.spawnTpDeny() && Players.isAtSpawn(commandSender)) {
-            Log.info("Denying teleport request while in spawn area from " + commandSender.getName() + " to " + target.getName());
+            Log.debug("Denying teleport request while in spawn area from " + commandSender.getName() + " to " + target.getName());
             commandSender.sendMessage(
                 Component.text("You are not allowed to teleport while in the spawn area!", NamedTextColor.GOLD)
             );
-            return true;
+            return;
         }
 
         if (plugin.isRequestBlock(target)) {
@@ -41,18 +50,18 @@ public class AskCmd extends TpCommand {
                 Component.text(target.getName())
                     .append(Component.text(" is currently not accepting any teleport requests!", NamedTextColor.GOLD))
             );
-            return true;
+            return;
         }
 
         if (Config.distanceLimit() &&
             Players.getOverworldXzVector(commandSender).distance(Players.getOverworldXzVector(target)) > Config.distanceLimitRadius()) {
-            Log.info("Denying teleport request while out of range from " + commandSender.getName() + " to " + target.getName());
+            Log.debug("Denying teleport request while out of range from " + commandSender.getName() + " to " + target.getName());
             commandSender.sendMessage(
                 Component.text("You are too far away from ", NamedTextColor.GOLD)
                     .append(Component.text(target.getName()))
                     .append(Component.text(" to teleport!", NamedTextColor.GOLD))
             );
-            return true;
+            return;
         }
 
         if (RequestManager.isRequestActive(target, commandSender)) {
@@ -61,14 +70,15 @@ public class AskCmd extends TpCommand {
                     .append(Component.text(target.getName()))
                     .append(Component.text(" to accept or deny your request.", NamedTextColor.GOLD))
             );
-            return true;
+            return;
         }
 
         if (!Config.allowMultiTargetRequest() && RequestManager.isRequestActiveByRequester(commandSender)) {
             commandSender.sendMessage(
-                Component.text("Please wait for your existing request to be accepted or denied.", NamedTextColor.GOLD)
+                Component.text("Please wait for your existing request to be accepted or denied.",
+                    NamedTextColor.GOLD)
             );
-            return true;
+            return;
         }
 
         commandSender.sendMessage(
@@ -98,7 +108,5 @@ public class AskCmd extends TpCommand {
         );
 
         RequestManager.addRequest(target, commandSender);
-
-        return true;
     }
 }

@@ -1,8 +1,9 @@
 package lol.hub.hubtpa;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,11 +18,19 @@ public class RequestManager {
                 pendingRequests.remove(request);
                 Player requester = Bukkit.getPlayer(request.requester().uuid());
                 if (requester != null) {
-                    requester.sendMessage(ChatColor.GOLD + "Your teleport request to " + ChatColor.RESET + request.target().name() + ChatColor.GOLD + " timed out.");
+                    requester.sendMessage(
+                        Component.text("Your teleport request to ", NamedTextColor.GOLD)
+                            .append(Component.text(request.target().name()))
+                            .append(Component.text(" timed out.", NamedTextColor.GOLD))
+                    );
                 }
                 Player target = Bukkit.getPlayer(request.target().uuid());
                 if (target != null) {
-                    target.sendMessage(ChatColor.GOLD + "The teleport request from " + ChatColor.RESET + request.requester().name() + ChatColor.GOLD + " timed out.");
+                    target.sendMessage(
+                        Component.text("The teleport request from ", NamedTextColor.GOLD)
+                            .append(Component.text(request.requester().name()))
+                            .append(Component.text(" timed out.", NamedTextColor.GOLD))
+                    );
                 }
             }
         });
@@ -84,5 +93,4 @@ public class RequestManager {
         }
         return false;
     }
-
 }

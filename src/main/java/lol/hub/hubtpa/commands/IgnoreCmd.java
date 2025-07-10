@@ -15,7 +15,7 @@ public class IgnoreCmd extends TpCommand {
     }
 
     @Override
-    public boolean run(Player commandSender, String targetName) {
+    public void run(Player commandSender, String targetName) {
         var targetUuid = Players.getPlayerUUID(plugin.getServer(), targetName);
         if (targetUuid == null) {
             commandSender.sendMessage(
@@ -23,7 +23,7 @@ public class IgnoreCmd extends TpCommand {
                     .append(Component.text(targetName))
                     .append(Component.text(" not found.", NamedTextColor.GOLD))
             );
-            return true;
+            return;
         }
 
         if (Ignores.get(commandSender.getUniqueId(), targetUuid)) {
@@ -37,8 +37,5 @@ public class IgnoreCmd extends TpCommand {
                 commandSender.sendMessage(Component.text("Maximum reached, can not add more ignores!", NamedTextColor.RED));
             }
         }
-
-        return true;
     }
-
 }

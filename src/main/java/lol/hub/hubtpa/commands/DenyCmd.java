@@ -15,7 +15,7 @@ public class DenyCmd extends TpCommand {
     }
 
     @Override
-    public boolean run(Player tpTarget, String requesterName) {
+    public void run(Player tpTarget, String requesterName) {
         var tpRequester = Players.getOnlinePlayer(plugin.getServer(), requesterName);
         if (tpRequester == null) {
             tpTarget.sendMessage(
@@ -23,7 +23,7 @@ public class DenyCmd extends TpCommand {
                     .append(Component.text(requesterName))
                     .append(Component.text(" is not online.", NamedTextColor.GOLD))
             );
-            return true;
+            return;
         }
 
         if (!RequestManager.isRequestActive(tpTarget, tpRequester)) {
@@ -32,7 +32,7 @@ public class DenyCmd extends TpCommand {
                     .append(Component.text(tpRequester.getName()))
                     .append(Component.text("!", NamedTextColor.GOLD))
             );
-            return true;
+            return;
         }
 
         tpTarget.sendMessage(
@@ -51,7 +51,5 @@ public class DenyCmd extends TpCommand {
 
         // TODO: wrap this method in a "deny" call
         RequestManager.removeRequests(tpTarget, tpRequester);
-
-        return true;
     }
 }
