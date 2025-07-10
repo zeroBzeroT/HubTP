@@ -17,6 +17,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 public final class Ignores {
+    public static final Function<JavaPlugin, String> defaultPath = (plugin -> plugin.getDataFolder().toPath().resolve("ignores").toString());
     private static final Gson gson = new GsonBuilder().create();
     private static final Type type = TypeToken.getParameterized(Set.class, UUID.class).getType();
 
@@ -49,8 +50,6 @@ public final class Ignores {
             ex.printStackTrace();
         }
     }
-
-    public static final Function<JavaPlugin, String> defaultPath = (plugin -> plugin.getDataFolder().toPath().resolve("ignores").toString());
 
     public static boolean get(UUID player, UUID target) {
         return load(player).contains(target);

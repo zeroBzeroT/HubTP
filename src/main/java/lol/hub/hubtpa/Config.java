@@ -8,6 +8,18 @@ import java.nio.file.Path;
 public final class Config {
 
     private static volatile boolean initialized = false;
+    private static boolean allowMultiTargetRequest;
+    private static int requestTimeoutSeconds;
+    private static boolean spawnTpDeny;
+    private static int spawnTpDenyRadius;
+    private static boolean distanceLimit;
+    private static int distanceLimitRadius;
+    private static int tpDelaySeconds;
+    private static boolean movementCheck;
+    private static boolean includeLeashed;
+    private static boolean includeLeashedInterdimensional;
+    private static Path ignoresPath;
+    private static boolean debug;
 
     private static synchronized void assertInitialized() {
         if (!initialized) throw new IllegalStateException("Config access prior to initialization!");
@@ -18,7 +30,6 @@ public final class Config {
 
         config.addDefault("allow-multi-target-request", true);
         config.addDefault("request-timeout-seconds", 60);
-        config.addDefault("unvanish-delay-ticks", 1);
         config.addDefault("spawn-tp-deny", true);
         config.addDefault("spawn-tp-deny-radius", 1500);
         config.addDefault("distance-limit", false);
@@ -29,6 +40,7 @@ public final class Config {
         config.addDefault("include-leashed-interdimensional", false);
         config.addDefault("ignores-path", Ignores.defaultPath.apply(plugin));
         config.addDefault("debug", false);
+        config.addDefault("bStats", true);
         config.options().copyDefaults(true);
         plugin.saveConfig();
 
@@ -40,12 +52,6 @@ public final class Config {
             plugin.saveConfig();
         }
         requestTimeoutSeconds = config.getInt("request-timeout-seconds");
-
-        if (config.getInt("unvanish-delay-ticks") < 1) {
-            config.set("unvanish-delay-ticks", 1);
-            plugin.saveConfig();
-        }
-        unvanishDelayTicks = config.getInt("unvanish-delay-ticks");
 
         spawnTpDeny = config.getBoolean("spawn-tp-deny");
 
@@ -91,79 +97,61 @@ public final class Config {
         initialized = true;
     }
 
-    private static boolean allowMultiTargetRequest;
     public static boolean allowMultiTargetRequest() {
         assertInitialized();
         return allowMultiTargetRequest;
     }
 
-    private static int requestTimeoutSeconds;
     public static int requestTimeoutSeconds() {
         assertInitialized();
         return requestTimeoutSeconds;
     }
 
-    private static int unvanishDelayTicks;
-    public static int unvanishDelayTicks() {
-        assertInitialized();
-        return unvanishDelayTicks;
-    }
-
-    private static boolean spawnTpDeny;
     public static boolean spawnTpDeny() {
         assertInitialized();
         return spawnTpDeny;
     }
 
-    private static int spawnTpDenyRadius;
     public static int spawnTpDenyRadius() {
         assertInitialized();
         return spawnTpDenyRadius;
     }
 
-    private static boolean distanceLimit;
     public static boolean distanceLimit() {
         assertInitialized();
         return distanceLimit;
     }
 
-    private static int distanceLimitRadius;
     public static int distanceLimitRadius() {
         assertInitialized();
         return distanceLimitRadius;
     }
 
-    private static int tpDelaySeconds;
     public static int tpDelaySeconds() {
         assertInitialized();
         return tpDelaySeconds;
     }
 
-    private static boolean movementCheck;
     public static boolean movementCheck() {
         assertInitialized();
         return movementCheck;
     }
 
-    private static boolean includeLeashed;
     public static boolean includeLeashed() {
         assertInitialized();
         return includeLeashed;
     }
 
-    private static boolean includeLeashedInterdimensional;
     public static boolean includeLeashedInterdimensional() {
         assertInitialized();
         return includeLeashedInterdimensional;
     }
 
-    private static Path ignoresPath;
     public static Path ignoresPath() {
         assertInitialized();
         return ignoresPath;
     }
 
-    private static boolean debug;
     public static boolean debug() {
         assertInitialized();
         return debug;

@@ -1,10 +1,9 @@
 package lol.hub.hubtpa.commands;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import lol.hub.hubtpa.Plugin;
 import lol.hub.hubtpa.RequestManager;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 

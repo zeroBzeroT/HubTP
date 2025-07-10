@@ -2,13 +2,10 @@ package lol.hub.hubtpa;
 
 import com.tcoded.folialib.FoliaLib;
 import com.tcoded.folialib.impl.ServerImplementation;
-import de.myzelyam.api.vanish.VanishAPI;
+import lol.hub.hubtpa.commands.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import lol.hub.hubtpa.bstats.bukkit.Metrics;
-import lol.hub.hubtpa.commands.*;
-import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -19,24 +16,22 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Plugin extends JavaPlugin {
-    FoliaLib foliaLib;
     public static final String BLOCKED_PREFIX = "requests-blocked-";
-    private static final Predicate<Server> superVanishLoaded = (server) -> {
-        return server.getPluginManager().isPluginEnabled("SuperVanish") || server.getPluginManager().isPluginEnabled("PremiumVanish");
-    };
-    private final Map<String, TpCommand> commands = new HashMap();
+    private final Map<String, TpCommand> commands = new HashMap<>();
+    FoliaLib foliaLib;
+
+    private static boolean shouldTpLeashed(Entity playerA, Entity playerB) {
+        return playerA.getWorld().getEnvironment() == playerB.getWorld().getEnvironment() || Config.includeLeashedInterdimensional();
+    }
 
     public ServerImplementation getScheduler() {
         return this.foliaLib.getImpl();
@@ -44,10 +39,6 @@ public class Plugin extends JavaPlugin {
 
     public void onLoad() {
         this.foliaLib = new FoliaLib(this);
-    }
-
-    private static boolean shouldTpLeashed(Entity playerA, Entity playerB) {
-        return playerA.getWorld().getEnvironment() == playerB.getWorld().getEnvironment() || Config.includeLeashedInterdimensional();
     }
 
     public Set<PluginCommand> getPluginCommands() {
@@ -66,9 +57,12 @@ public class Plugin extends JavaPlugin {
     public void onEnable() {
         Log.set(this.getLogger());
 
-        new Metrics(this, 11798);
-
         Config.load(this);
+
+        // Load Plugin Metrics
+        if (getConfig().getBoolean("bStats")) {
+            new org.bstats.bukkit.Metrics(this, 11798);
+        }
 
         for (PluginCommand cmd : getPluginCommands()) {
             switch (cmd.getLabel()) {
@@ -110,7 +104,7 @@ public class Plugin extends JavaPlugin {
         // make sure that sender and target are not the same player
         if (targetName != null && sender.getName().equalsIgnoreCase(targetName)) {
             commands.get(commandLabel).sendUsage(sender);
-            return false;
+            return true;
         }
 
         return commands.get(commandLabel).run(sender, targetName);
@@ -125,8 +119,8 @@ public class Plugin extends JavaPlugin {
             if (tpTarget.getVehicle() == null && tpRequester.getVehicle() == null) {
                 int tpDelay = Config.tpDelaySeconds();
                 if (tpDelay > 0) {
-                    tpTarget.sendMessage(((TextComponent) ((TextComponent) ((TextComponent) Component.text("Teleporting ", NamedTextColor.GOLD).append(Component.text(tpRequester.getName()))).append(Component.text(" in ", NamedTextColor.GOLD))).append(Component.text(tpDelay))).append(Component.text(" seconds...", NamedTextColor.GOLD)));
-                    tpRequester.sendMessage(((TextComponent) Component.text("Teleporting in ", NamedTextColor.GOLD).append(Component.text(tpDelay))).append(Component.text(" seconds...", NamedTextColor.GOLD)));
+                    tpTarget.sendMessage(Component.text("Teleporting ", NamedTextColor.GOLD).append(Component.text(tpRequester.getName())).append(Component.text(" in ", NamedTextColor.GOLD)).append(Component.text(tpDelay)).append(Component.text(" seconds...", NamedTextColor.GOLD)));
+                    tpRequester.sendMessage(Component.text("Teleporting in ", NamedTextColor.GOLD).append(Component.text(tpDelay)).append(Component.text(" seconds...", NamedTextColor.GOLD)));
                     this.getScheduler().runLaterAsync(() -> {
                         if (RequestManager.isRequestActive(tpTarget, tpRequester)) {
                             this.executeTPMove(tpTarget, tpRequester);
@@ -148,9 +142,6 @@ public class Plugin extends JavaPlugin {
     public void executeTPMove(Player tpTarget, Player tpRequester) {
         String var10000 = tpRequester.getName();
         Log.info("Teleporting " + var10000 + " to " + tpTarget.getName());
-        if (superVanishLoaded.test(this.getServer())) {
-            VanishAPI.hidePlayer(tpRequester);
-        }
 
         if (Config.includeLeashed() && shouldTpLeashed(tpTarget, tpRequester)) {
             tpRequester.getWorld()
@@ -178,19 +169,10 @@ public class Plugin extends JavaPlugin {
                     tpTarget.sendMessage(msg);
                     tpRequester.sendMessage(msg);
                 }
-            })
-            .thenAccept(ignored -> {
-                this.getScheduler().runLater(() -> {
-                    if (superVanishLoaded.test(this.getServer())) {
-                        VanishAPI.showPlayer(tpRequester);
-                    }
-                }, (long) Config.unvanishDelayTicks());
             });
     }
 
     public boolean isRequestBlock(Player player) {
         return this.getConfig().getBoolean("requests-blocked-" + player.getUniqueId());
     }
-
-
 }

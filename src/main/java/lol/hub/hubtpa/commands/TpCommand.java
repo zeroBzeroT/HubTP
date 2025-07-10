@@ -8,11 +8,11 @@ import java.util.List;
 
 public abstract class TpCommand {
 
-    final Plugin plugin;
     public final String label;
     public final List<String> aliases;
     public final String description;
     public final String usage;
+    final Plugin plugin;
 
     public TpCommand(Plugin plugin, String label, List<String> aliases, String description, String usage) {
         this.plugin = plugin;

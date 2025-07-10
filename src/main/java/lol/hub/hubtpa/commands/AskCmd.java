@@ -1,14 +1,10 @@
 package lol.hub.hubtpa.commands;
 
-import lol.hub.hubtpa.Config;
+import lol.hub.hubtpa.*;
+import lol.hub.hubtpa.util.Players;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import lol.hub.hubtpa.Ignores;
-import lol.hub.hubtpa.Log;
-import lol.hub.hubtpa.Plugin;
-import lol.hub.hubtpa.RequestManager;
-import lol.hub.hubtpa.util.Players;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
@@ -23,7 +19,7 @@ public class AskCmd extends TpCommand {
         var target = Players.getOnlinePlayer(plugin.getServer(), targetName);
         if (target == null) {
             commandSender.sendMessage(Component.text("Player not found.", NamedTextColor.GOLD));
-            return false;
+            return true;
         }
 
         if (Ignores.get(target.getUniqueId(), commandSender.getUniqueId())) {
@@ -37,7 +33,7 @@ public class AskCmd extends TpCommand {
             commandSender.sendMessage(
                 Component.text("You are not allowed to teleport while in the spawn area!", NamedTextColor.GOLD)
             );
-            return false;
+            return true;
         }
 
         if (plugin.isRequestBlock(target)) {
@@ -45,7 +41,7 @@ public class AskCmd extends TpCommand {
                 Component.text(target.getName())
                     .append(Component.text(" is currently not accepting any teleport requests!", NamedTextColor.GOLD))
             );
-            return false;
+            return true;
         }
 
         if (Config.distanceLimit() &&
@@ -56,7 +52,7 @@ public class AskCmd extends TpCommand {
                     .append(Component.text(target.getName()))
                     .append(Component.text(" to teleport!", NamedTextColor.GOLD))
             );
-            return false;
+            return true;
         }
 
         if (RequestManager.isRequestActive(target, commandSender)) {
@@ -65,14 +61,14 @@ public class AskCmd extends TpCommand {
                     .append(Component.text(target.getName()))
                     .append(Component.text(" to accept or deny your request.", NamedTextColor.GOLD))
             );
-            return false;
+            return true;
         }
 
         if (!Config.allowMultiTargetRequest() && RequestManager.isRequestActiveByRequester(commandSender)) {
             commandSender.sendMessage(
                 Component.text("Please wait for your existing request to be accepted or denied.", NamedTextColor.GOLD)
             );
-            return false;
+            return true;
         }
 
         commandSender.sendMessage(

@@ -1,11 +1,10 @@
 package lol.hub.hubtpa.commands;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import lol.hub.hubtpa.util.Players;
 import lol.hub.hubtpa.Plugin;
 import lol.hub.hubtpa.RequestManager;
-import org.bukkit.ChatColor;
+import lol.hub.hubtpa.util.Players;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
@@ -24,7 +23,7 @@ public class DenyCmd extends TpCommand {
                     .append(Component.text(requesterName))
                     .append(Component.text(" is not online.", NamedTextColor.GOLD))
             );
-            return false;
+            return true;
         }
 
         if (!RequestManager.isRequestActive(tpTarget, tpRequester)) {
@@ -33,7 +32,7 @@ public class DenyCmd extends TpCommand {
                     .append(Component.text(tpRequester.getName()))
                     .append(Component.text("!", NamedTextColor.GOLD))
             );
-            return false;
+            return true;
         }
 
         tpTarget.sendMessage(

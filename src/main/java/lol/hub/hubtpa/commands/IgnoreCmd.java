@@ -1,10 +1,10 @@
 package lol.hub.hubtpa.commands;
 
+import lol.hub.hubtpa.Ignores;
+import lol.hub.hubtpa.Plugin;
+import lol.hub.hubtpa.util.Players;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import lol.hub.hubtpa.Ignores;
-import lol.hub.hubtpa.util.Players;
-import lol.hub.hubtpa.Plugin;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
@@ -23,7 +23,7 @@ public class IgnoreCmd extends TpCommand {
                     .append(Component.text(targetName))
                     .append(Component.text(" not found.", NamedTextColor.GOLD))
             );
-            return false;
+            return true;
         }
 
         if (Ignores.get(commandSender.getUniqueId(), targetUuid)) {
