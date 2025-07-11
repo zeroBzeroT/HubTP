@@ -183,13 +183,13 @@ public class Plugin extends JavaPlugin {
                     // Notify players about the pending teleport
                     tpTarget.sendMessage(Component.text("Teleporting ", NamedTextColor.GOLD)
                         .append(Component.text(tpRequester.getName()))
-                        .append(Component.text(" in ", NamedTextColor.GOLD))
+                        .append(Component.text(" in "))
                         .append(Component.text(tpDelay))
-                        .append(Component.text(" seconds...", NamedTextColor.GOLD)));
+                        .append(Component.text(" seconds...")));
 
                     tpRequester.sendMessage(Component.text("Teleporting in ", NamedTextColor.GOLD)
                         .append(Component.text(tpDelay))
-                        .append(Component.text(" seconds...", NamedTextColor.GOLD)));
+                        .append(Component.text(" seconds...")));
 
                     this.getScheduler().runLaterAsync(() -> {
                         if (RequestManager.isRequestActive(tpTarget, tpRequester)) {
@@ -240,10 +240,10 @@ public class Plugin extends JavaPlugin {
                     tpRequester.sendMessage(
                         Component.text("Teleported to ", NamedTextColor.GOLD)
                             .append(Component.text(tpTarget.getName()))
-                            .append(Component.text("!", NamedTextColor.GOLD)));
+                            .append(Component.text("!")));
                 } else {
                     TextComponent msg =
-                        Component.text("Teleport failed, you should harass your admin because of this!", NamedTextColor.RED);
+                        Component.text("Teleportation failed. Please try again later or contact an admin.", NamedTextColor.RED);
                     tpTarget.sendMessage(msg);
                     tpRequester.sendMessage(msg);
                 }

@@ -22,7 +22,7 @@ public class AcceptCmd extends TpCommand {
             tpTarget.sendMessage(
                 Component.text("Player ", NamedTextColor.RED)
                     .append(Component.text(requesterName))
-                    .append(Component.text(" is not online.", NamedTextColor.RED))
+                    .append(Component.text(" is not online."))
             );
             return;
         }
@@ -31,7 +31,7 @@ public class AcceptCmd extends TpCommand {
             tpTarget.sendMessage(
                 Component.text("There is no request to accept from ", NamedTextColor.RED)
                     .append(Component.text(tpRequester.getName()))
-                    .append(Component.text("!", NamedTextColor.RED))
+                    .append(Component.text("!"))
             );
             return;
         }
@@ -48,7 +48,7 @@ public class AcceptCmd extends TpCommand {
                 .append(Component.text("accepted", NamedTextColor.GREEN))
                 .append(Component.text(". Teleporting to ", NamedTextColor.GOLD))
                 .append(Component.text(tpTarget.getName()))
-                .append(Component.text(".", NamedTextColor.GOLD))
+                .append(Component.text("."))
         );
 
         // TODO: combine these 2 methods to a single "accept" call

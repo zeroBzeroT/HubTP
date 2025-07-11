@@ -41,9 +41,8 @@ public final class Ignores {
         var path = filePath(player);
 
         // create directory structure up to parent
-        if (!path.toFile().getParentFile().mkdirs()) {
-            Log.error(new Exception("Could not create folder for ignores."));
-        }
+        //noinspection ResultOfMethodCallIgnored
+        path.toFile().getParentFile().mkdirs();
 
         var json = gson.toJson(ignores);
 

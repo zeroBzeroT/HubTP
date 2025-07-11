@@ -21,7 +21,7 @@ public class RequestManager {
                     requester.sendMessage(
                         Component.text("Your teleport request to ", NamedTextColor.GOLD)
                             .append(Component.text(request.target().name()))
-                            .append(Component.text(" timed out.", NamedTextColor.GOLD))
+                            .append(Component.text(" timed out."))
                     );
                 }
                 Player target = Bukkit.getPlayer(request.target().uuid());
@@ -29,7 +29,7 @@ public class RequestManager {
                     target.sendMessage(
                         Component.text("The teleport request from ", NamedTextColor.GOLD)
                             .append(Component.text(request.requester().name()))
-                            .append(Component.text(" timed out.", NamedTextColor.GOLD))
+                            .append(Component.text(" timed out."))
                     );
                 }
             }

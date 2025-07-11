@@ -22,15 +22,15 @@ public class AskCmd extends TpCommand {
             commandSender.sendMessage(
                 Component.text("Player ", NamedTextColor.RED)
                     .append(Component.text(targetName))
-                    .append(Component.text(" is not online.", NamedTextColor.RED))
+                    .append(Component.text(" is not online."))
             );
             return;
         }
 
         if (Ignores.get(target.getUniqueId(), commandSender.getUniqueId())) {
             commandSender.sendMessage(
-                Component.text(target.getName())
-                    .append(Component.text(" is ignoring your tpa requests!", NamedTextColor.RED))
+                Component.text(target.getName(), NamedTextColor.RED)
+                    .append(Component.text(" is ignoring your tpa requests!"))
             );
             return;
         }
@@ -39,7 +39,7 @@ public class AskCmd extends TpCommand {
             commandSender.sendMessage(
                 Component.text("You are ignoring ", NamedTextColor.RED)
                     .append(Component.text(target.getName()))
-                    .append(Component.text(". Cannot send teleport requests.", NamedTextColor.RED))
+                    .append(Component.text(". Cannot send teleport requests."))
             );
             return;
         }
@@ -55,8 +55,8 @@ public class AskCmd extends TpCommand {
 
         if (plugin.isRequestBlock(target)) {
             commandSender.sendMessage(
-                Component.text(target.getName())
-                    .append(Component.text(" is currently not accepting any teleport requests!", NamedTextColor.RED))
+                Component.text(target.getName(), NamedTextColor.RED)
+                    .append(Component.text(" is currently not accepting any teleport requests!"))
             );
             return;
         }
@@ -75,7 +75,7 @@ public class AskCmd extends TpCommand {
             commandSender.sendMessage(
                 Component.text("You are too far away from ", NamedTextColor.RED)
                     .append(Component.text(target.getName()))
-                    .append(Component.text(" to teleport!", NamedTextColor.RED))
+                    .append(Component.text(" to teleport!"))
             );
             return;
         }
@@ -84,7 +84,7 @@ public class AskCmd extends TpCommand {
             commandSender.sendMessage(
                 Component.text("Please wait for ", NamedTextColor.RED)
                     .append(Component.text(target.getName()))
-                    .append(Component.text(" to accept or deny your request.", NamedTextColor.RED))
+                    .append(Component.text(" to accept or deny your request."))
             );
             return;
         }
@@ -100,7 +100,7 @@ public class AskCmd extends TpCommand {
         commandSender.sendMessage(
             Component.text("Request sent to ", NamedTextColor.GOLD)
                 .append(Component.text(target.getName()))
-                .append(Component.text(".", NamedTextColor.GOLD))
+                .append(Component.text("."))
         );
 
         target.sendMessage(

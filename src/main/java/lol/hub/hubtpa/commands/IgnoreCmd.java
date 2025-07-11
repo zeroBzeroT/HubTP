@@ -22,7 +22,7 @@ public class IgnoreCmd extends TpCommand {
             commandSender.sendMessage(
                 Component.text("Player ", NamedTextColor.RED)
                     .append(Component.text(targetName))
-                    .append(Component.text(" not found.", NamedTextColor.RED))
+                    .append(Component.text(" not found."))
             );
             return;
         }
@@ -32,7 +32,7 @@ public class IgnoreCmd extends TpCommand {
             commandSender.sendMessage(
                 Component.text("No longer ignoring teleport requests from ", NamedTextColor.GOLD)
                     .append(Component.text(targetName))
-                    .append(Component.text(".", NamedTextColor.GOLD))
+                    .append(Component.text("."))
             );
         } else {
             boolean success = Ignores.set(commandSender.getUniqueId(), targetUuid, true);
@@ -41,7 +41,7 @@ public class IgnoreCmd extends TpCommand {
                 commandSender.sendMessage(
                     Component.text("Ignoring teleport requests from ", NamedTextColor.GOLD)
                         .append(Component.text(targetName))
-                        .append(Component.text(".", NamedTextColor.GOLD))
+                        .append(Component.text("."))
                 );
             } else {
                 commandSender.sendMessage(

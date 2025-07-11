@@ -28,6 +28,6 @@ public abstract class TpCommand {
     public abstract void run(Player commandSender, String targetName);
 
     public void sendUsage(Player player) {
-        player.sendMessage(Component.text(usage, NamedTextColor.GOLD));
+        player.sendMessage(Component.text("Usage: " + usage, NamedTextColor.GOLD));
     }
 }
