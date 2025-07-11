@@ -12,16 +12,17 @@ import static lol.hub.hubtpa.Plugin.BLOCKED_PREFIX;
 // tpt (tptoggle)
 public class ToggleCmd extends TpCommand {
     public ToggleCmd(Plugin plugin, PluginCommand pluginCommand) {
-        super(plugin, pluginCommand);
+        super(plugin, pluginCommand, 0);
     }
 
     @Override
     public void run(Player commandSender, String ignored) {
         if (plugin.isRequestBlock(commandSender)) {
-            plugin.getConfig().set(BLOCKED_PREFIX + commandSender.getUniqueId(), null); // if toggle is getting turned off, we delete instead of setting false
+            // if toggle is getting turned off, we delete instead of setting false
+            plugin.getConfig().set(BLOCKED_PREFIX + commandSender.getUniqueId(), null);
             commandSender.sendMessage(
                 Component.text("Request are now ", NamedTextColor.GOLD)
-                    .append(Component.text(" enabled", NamedTextColor.GREEN))
+                    .append(Component.text("enabled", NamedTextColor.GREEN))
                     .append(Component.text("!", NamedTextColor.GOLD))
             );
         } else {
@@ -29,7 +30,7 @@ public class ToggleCmd extends TpCommand {
             RequestManager.cancelRequestsByTarget(commandSender);
             commandSender.sendMessage(
                 Component.text("Request are now ", NamedTextColor.GOLD)
-                    .append(Component.text(" disabled", NamedTextColor.RED))
+                    .append(Component.text("disabled", NamedTextColor.RED))
                     .append(Component.text("!", NamedTextColor.GOLD))
             );
         }

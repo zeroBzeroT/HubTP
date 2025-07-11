@@ -1,39 +1,33 @@
 package lol.hub.hubtpa.commands;
 
 import lol.hub.hubtpa.Plugin;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public abstract class TpCommand {
-
-    public final String label;
-    public final List<String> aliases;
-    public final String description;
     public final String usage;
     final Plugin plugin;
+    private final int argumentCount;
 
-    public TpCommand(Plugin plugin, String label, List<String> aliases, String description, String usage) {
+    public TpCommand(Plugin plugin, String usage, int argumentCount) {
         this.plugin = plugin;
-        this.label = label;
-        this.aliases = aliases;
-        this.description = description;
         this.usage = usage;
+        this.argumentCount = argumentCount;
     }
 
-    public TpCommand(Plugin plugin, PluginCommand pluginCommand) {
-        this(plugin,
-            pluginCommand.getLabel(),
-            pluginCommand.getAliases().stream().toList(),
-            pluginCommand.getDescription(),
-            pluginCommand.getUsage());
+    public TpCommand(Plugin plugin, PluginCommand pluginCommand, int argumentCount) {
+        this(plugin, pluginCommand.getUsage(), argumentCount);
+    }
+
+    public int getArgumentCount() {
+        return argumentCount;
     }
 
     public abstract void run(Player commandSender, String targetName);
 
     public void sendUsage(Player player) {
-        player.sendMessage(usage);
+        player.sendMessage(Component.text(usage, NamedTextColor.GOLD));
     }
-
 }

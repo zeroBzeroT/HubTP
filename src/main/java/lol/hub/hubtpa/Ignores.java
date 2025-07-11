@@ -41,9 +41,12 @@ public final class Ignores {
         var path = filePath(player);
 
         // create directory structure up to parent
-        path.toFile().getParentFile().mkdirs();
+        if (!path.toFile().getParentFile().mkdirs()) {
+            Log.error(new Exception("Could not create folder for ignores."));
+        }
 
         var json = gson.toJson(ignores);
+
         try {
             Files.writeString(path, json);
         } catch (IOException ex) {
@@ -60,12 +63,14 @@ public final class Ignores {
      */
     public static boolean set(UUID player, UUID target, boolean ignore) {
         Set<UUID> set = load(player);
+
         if (ignore) {
             if (set.size() >= 1024) return false;
             set.add(target);
         } else {
             set.remove(target);
         }
+
         save(player, set);
         return true;
     }

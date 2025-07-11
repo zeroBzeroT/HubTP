@@ -28,7 +28,7 @@ commands:
     permission-message: 'Insufficient permissions, you should harass your admin because of this!'
   tpi:
     description: 'Ignore requests per player'
-    usage: '/tpi [<name>]'
+    usage: '/tpi <name>'
     aliases: [ 'tpignore' ]
     permission: 'tpa.tpi'
     permission-message: 'Insufficient permissions, you should harass your admin because of this!'

@@ -11,26 +11,27 @@ import org.bukkit.entity.Player;
 // tpn (tpdeny)
 public class DenyCmd extends TpCommand {
     public DenyCmd(Plugin plugin, PluginCommand pluginCommand) {
-        super(plugin, pluginCommand);
+        super(plugin, pluginCommand, 1);
     }
 
     @Override
     public void run(Player tpTarget, String requesterName) {
         var tpRequester = Players.getOnlinePlayer(plugin.getServer(), requesterName);
+
         if (tpRequester == null) {
             tpTarget.sendMessage(
-                Component.text("Player ", NamedTextColor.GOLD)
+                Component.text("Player ", NamedTextColor.RED)
                     .append(Component.text(requesterName))
-                    .append(Component.text(" is not online.", NamedTextColor.GOLD))
+                    .append(Component.text(" is not online.", NamedTextColor.RED))
             );
             return;
         }
 
         if (!RequestManager.isRequestActive(tpTarget, tpRequester)) {
             tpTarget.sendMessage(
-                Component.text("There is no request to deny from ", NamedTextColor.GOLD)
+                Component.text("There is no request to deny from ", NamedTextColor.RED)
                     .append(Component.text(tpRequester.getName()))
-                    .append(Component.text("!", NamedTextColor.GOLD))
+                    .append(Component.text("!", NamedTextColor.RED))
             );
             return;
         }

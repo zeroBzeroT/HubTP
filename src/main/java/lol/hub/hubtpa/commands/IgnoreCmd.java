@@ -11,30 +11,42 @@ import org.bukkit.entity.Player;
 // tpi (tpignore)
 public class IgnoreCmd extends TpCommand {
     public IgnoreCmd(Plugin plugin, PluginCommand pluginCommand) {
-        super(plugin, pluginCommand);
+        super(plugin, pluginCommand, 1);
     }
 
     @Override
     public void run(Player commandSender, String targetName) {
         var targetUuid = Players.getPlayerUUID(plugin.getServer(), targetName);
+
         if (targetUuid == null) {
             commandSender.sendMessage(
-                Component.text("Player ", NamedTextColor.GOLD)
+                Component.text("Player ", NamedTextColor.RED)
                     .append(Component.text(targetName))
-                    .append(Component.text(" not found.", NamedTextColor.GOLD))
+                    .append(Component.text(" not found.", NamedTextColor.RED))
             );
             return;
         }
 
         if (Ignores.get(commandSender.getUniqueId(), targetUuid)) {
             Ignores.set(commandSender.getUniqueId(), targetUuid, false);
-            commandSender.sendMessage(Component.text("No longer ignoring tp requests from ").append(Component.text(targetName)));
+            commandSender.sendMessage(
+                Component.text("No longer ignoring teleport requests from ", NamedTextColor.GOLD)
+                    .append(Component.text(targetName))
+                    .append(Component.text(".", NamedTextColor.GOLD))
+            );
         } else {
             boolean success = Ignores.set(commandSender.getUniqueId(), targetUuid, true);
+
             if (success) {
-                commandSender.sendMessage(Component.text("Ignoring tp requests from ").append(Component.text(targetName)));
+                commandSender.sendMessage(
+                    Component.text("Ignoring teleport requests from ", NamedTextColor.GOLD)
+                        .append(Component.text(targetName))
+                        .append(Component.text(".", NamedTextColor.GOLD))
+                );
             } else {
-                commandSender.sendMessage(Component.text("Maximum reached, can not add more ignores!", NamedTextColor.RED));
+                commandSender.sendMessage(
+                    Component.text("Maximum number of ignores reached.", NamedTextColor.RED)
+                );
             }
         }
     }

@@ -4,7 +4,7 @@ Minecraft self-service teleport requests
 
 ---
 
-##### Commands
+## Commands
 
 | usage           | aliases             | description                | permission |
 |-----------------|---------------------|----------------------------|------------|
@@ -14,3 +14,6 @@ Minecraft self-service teleport requests
 | `/tpi [<NAME>]` | `tpignore`          | Ignore requests per player | `tpa.tpi`  |
 | `/tpt`          | `tptoggle`          | Ignore requests globally   | `tpa.tpt`  |
 
+## Statistics
+
+![Graph](https://bstats.org/signatures/bukkit/SafeTP.svg)

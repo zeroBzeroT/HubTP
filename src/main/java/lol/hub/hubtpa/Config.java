@@ -6,7 +6,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.nio.file.Path;
 
 public final class Config {
-
     private static volatile boolean initialized = false;
     private static boolean allowMultiTargetRequest;
     private static int requestTimeoutSeconds;
@@ -81,14 +80,17 @@ public final class Config {
 
         includeLeashedInterdimensional = config.getBoolean("include-leashed-interdimensional");
 
+        //noinspection DataFlowIssue
         if (config.getString("ignores-path") == null || config.getString("ignores-path").isBlank()) {
             config.set("ignores-path", Ignores.defaultPath.apply(plugin));
             plugin.saveConfig();
         }
+
         if (!Paths.isValid(config.getString("ignores-path"))) {
             config.set("ignores-path", Ignores.defaultPath.apply(plugin));
             plugin.saveConfig();
         }
+        //noinspection DataFlowIssue
         ignoresPath = Path.of(config.getString("ignores-path"));
 
         debug = config.getBoolean("debug");
@@ -155,5 +157,4 @@ public final class Config {
         assertInitialized();
         return debug;
     }
-
 }

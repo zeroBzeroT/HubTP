@@ -26,5 +26,4 @@ public class Log {
     public static void set(@NotNull Logger logger) {
         Log.logger = logger;
     }
-
 }

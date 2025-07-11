@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'lol.hub'
-version = '4.0.1'
+version = '4.0.2'
 description = 'Minecraft self-service teleport requests'
 
 repositories {
@@ -68,7 +68,8 @@ shadowJar {
     archiveFileName = "${project.name}-${project.version}+${project.minecraft_version}.jar"
     destinationDirectory = layout.buildDirectory.dir('dist')
 
-    relocate 'com.tcoded', 'com.krazzzzymonkey.cloudanarchycore.shaded.tcoded'
+    relocate 'org.bstats', 'com.krazzzzymonkey.cloudanarchycore.bstats'
+    relocate 'com.tcoded', 'com.krazzzzymonkey.cloudanarchycore.tcoded'
 
     // delete unshaded jar
     doLast {
