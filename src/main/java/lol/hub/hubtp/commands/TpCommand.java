@@ -1,6 +1,6 @@
-package lol.hub.hubtpa.commands;
+package lol.hub.hubtp.commands;
 
-import lol.hub.hubtpa.Plugin;
+import lol.hub.hubtp.Plugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.PluginCommand;

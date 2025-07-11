@@ -1,10 +1,10 @@
-name: HubTPA
+name: HubTP
 version: @VERSION@
 description: @DESCRIPTION@
-website: "https://github.com/zeroBzeroT/HubTPA/"
+website: "https://github.com/zeroBzeroT/HubTP/"
 author: 'nothub'
 authors: [ 'AlexProgrammerDE', 'MaybeEther', 'SooStrator', 'bierdosenhalter' ]
-main: 'lol.hub.hubtpa.Plugin'
+main: 'lol.hub.hubtp.Plugin'
 api-version: '1.20'
 
 commands:

@@ -1,7 +1,7 @@
-package lol.hub.hubtpa.commands;
+package lol.hub.hubtp.commands;
 
-import lol.hub.hubtpa.*;
-import lol.hub.hubtpa.util.Players;
+import lol.hub.hubtp.*;
+import lol.hub.hubtp.util.Players;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;

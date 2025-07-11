@@ -1,16 +1,16 @@
-package lol.hub.hubtpa.commands;
+package lol.hub.hubtp.commands;
 
-import lol.hub.hubtpa.Plugin;
-import lol.hub.hubtpa.RequestManager;
-import lol.hub.hubtpa.util.Players;
+import lol.hub.hubtp.Plugin;
+import lol.hub.hubtp.RequestManager;
+import lol.hub.hubtp.util.Players;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
-// tpn (tpdeny)
-public class DenyCmd extends TpCommand {
-    public DenyCmd(Plugin plugin, PluginCommand pluginCommand) {
+// tpy (tpaccept)
+public class AcceptCmd extends TpCommand {
+    public AcceptCmd(Plugin plugin, PluginCommand pluginCommand) {
         super(plugin, pluginCommand, 1);
     }
 
@@ -29,7 +29,7 @@ public class DenyCmd extends TpCommand {
 
         if (!RequestManager.isRequestActive(tpTarget, tpRequester)) {
             tpTarget.sendMessage(
-                Component.text("There is no request to deny from ", NamedTextColor.RED)
+                Component.text("There is no request to accept from ", NamedTextColor.RED)
                     .append(Component.text(tpRequester.getName()))
                     .append(Component.text("!"))
             );
@@ -39,18 +39,20 @@ public class DenyCmd extends TpCommand {
         tpTarget.sendMessage(
             Component.text("Request from ", NamedTextColor.GOLD)
                 .append(Component.text(tpRequester.getName()))
-                .append(Component.text(" denied", NamedTextColor.RED))
-                .append(Component.text("!", NamedTextColor.GOLD))
-        );
-        tpRequester.sendMessage(
-            Component.text("Your request sent to ", NamedTextColor.GOLD)
-                .append(Component.text(tpTarget.getName()))
-                .append(Component.text(" was"))
-                .append(Component.text(" denied", NamedTextColor.RED))
+                .append(Component.text(" accepted", NamedTextColor.GREEN))
                 .append(Component.text("!", NamedTextColor.GOLD))
         );
 
-        // TODO: wrap this method in a "deny" call
+        tpRequester.sendMessage(
+            Component.text("Your request was ", NamedTextColor.GOLD)
+                .append(Component.text("accepted", NamedTextColor.GREEN))
+                .append(Component.text(". Teleporting to ", NamedTextColor.GOLD))
+                .append(Component.text(tpTarget.getName()))
+                .append(Component.text("."))
+        );
+
+        // TODO: combine these 2 methods to a single "accept" call
+        plugin.executeTP(tpTarget, tpRequester);
         RequestManager.removeRequests(tpTarget, tpRequester);
     }
 }

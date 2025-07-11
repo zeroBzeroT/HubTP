@@ -1,13 +1,13 @@
-package lol.hub.hubtpa.commands;
+package lol.hub.hubtp.commands;
 
-import lol.hub.hubtpa.Plugin;
-import lol.hub.hubtpa.RequestManager;
+import lol.hub.hubtp.Plugin;
+import lol.hub.hubtp.RequestManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
-import static lol.hub.hubtpa.Plugin.BLOCKED_PREFIX;
+import static lol.hub.hubtp.Plugin.BLOCKED_PREFIX;
 
 // tpt (tptoggle)
 public class ToggleCmd extends TpCommand {

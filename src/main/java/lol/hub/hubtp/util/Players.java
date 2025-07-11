@@ -1,6 +1,6 @@
-package lol.hub.hubtpa.util;
+package lol.hub.hubtp.util;
 
-import lol.hub.hubtpa.Config;
+import lol.hub.hubtp.Config;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;

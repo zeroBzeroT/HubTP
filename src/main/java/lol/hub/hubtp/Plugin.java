@@ -1,8 +1,8 @@
-package lol.hub.hubtpa;
+package lol.hub.hubtp;
 
 import com.tcoded.folialib.FoliaLib;
 import com.tcoded.folialib.impl.PlatformScheduler;
-import lol.hub.hubtpa.commands.*;
+import lol.hub.hubtp.commands.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
