@@ -9,20 +9,30 @@ import org.bukkit.entity.Player;
 public abstract class TpCommand {
     public final String usage;
     final Plugin plugin;
-    private final int argumentCount;
+    private final int minArguments;
+    private final int maxArguments;
 
-    public TpCommand(Plugin plugin, String usage, int argumentCount) {
+    public TpCommand(Plugin plugin, String usage, int minArguments, int maxArguments) {
         this.plugin = plugin;
         this.usage = usage;
-        this.argumentCount = argumentCount;
+        this.minArguments = minArguments;
+        this.maxArguments = maxArguments;
+    }
+
+    public TpCommand(Plugin plugin, String usage, int argumentCount) {
+        this(plugin, usage, argumentCount, argumentCount);
     }
 
     public TpCommand(Plugin plugin, PluginCommand pluginCommand, int argumentCount) {
-        this(plugin, pluginCommand.getUsage(), argumentCount);
+        this(plugin, pluginCommand.getUsage(), argumentCount, argumentCount);
     }
 
-    public int getArgumentCount() {
-        return argumentCount;
+    public TpCommand(Plugin plugin, PluginCommand pluginCommand, int minArguments, int maxArguments) {
+        this(plugin, pluginCommand.getUsage(), minArguments, maxArguments);
+    }
+
+    public boolean isArgumentCountValid(int count) {
+        return count >= minArguments && count <= maxArguments;
     }
 
     public abstract void run(Player commandSender, String targetName);
