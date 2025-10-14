@@ -17,11 +17,13 @@ public final class Config {
     private static boolean movementCheck;
     private static boolean includeLeashed;
     private static boolean includeLeashedInterdimensional;
+    private static boolean teleportMountedEntities;
     private static Path ignoresPath;
     private static boolean debug;
 
     private static synchronized void assertInitialized() {
-        if (!initialized) throw new IllegalStateException("Config access prior to initialization!");
+        if (!initialized)
+            throw new IllegalStateException("Config access prior to initialization!");
     }
 
     public static synchronized void load(Plugin plugin) {
@@ -37,12 +39,12 @@ public final class Config {
         config.addDefault("movement-check", false);
         config.addDefault("include-leashed", true);
         config.addDefault("include-leashed-interdimensional", false);
+        config.addDefault("teleport-mounted-entities", true);
         config.addDefault("ignores-path", Ignores.defaultPath.apply(plugin));
         config.addDefault("debug", false);
         config.addDefault("bStats", true);
         config.options().copyDefaults(true);
         plugin.saveConfig();
-
 
         allowMultiTargetRequest = config.getBoolean("allow-multi-target-request");
 
@@ -80,7 +82,9 @@ public final class Config {
 
         includeLeashedInterdimensional = config.getBoolean("include-leashed-interdimensional");
 
-        //noinspection DataFlowIssue
+        teleportMountedEntities = config.getBoolean("teleport-mounted-entities");
+
+        // noinspection DataFlowIssue
         if (config.getString("ignores-path") == null || config.getString("ignores-path").isBlank()) {
             config.set("ignores-path", Ignores.defaultPath.apply(plugin));
             plugin.saveConfig();
@@ -90,7 +94,7 @@ public final class Config {
             config.set("ignores-path", Ignores.defaultPath.apply(plugin));
             plugin.saveConfig();
         }
-        //noinspection DataFlowIssue
+        // noinspection DataFlowIssue
         ignoresPath = Path.of(config.getString("ignores-path"));
 
         debug = config.getBoolean("debug");
@@ -146,6 +150,11 @@ public final class Config {
     public static boolean includeLeashedInterdimensional() {
         assertInitialized();
         return includeLeashedInterdimensional;
+    }
+
+    public static boolean teleportMountedEntities() {
+        assertInitialized();
+        return teleportMountedEntities;
     }
 
     public static Path ignoresPath() {

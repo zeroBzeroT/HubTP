@@ -38,6 +38,12 @@ commands:
     aliases: [ 'tptoggle' ]
     permission: 'tpa.tpt'
     permission-message: 'Insufficient permissions, you should harass your admin because of this!'
+  tpc:
+    description: 'Cancel outgoing requests'
+    usage: '/tpc <name>'
+    aliases: [ 'tpcancel' ]
+    permission: 'tpa.tpc'
+    permission-message: 'Insufficient permissions, you should harass your admin because of this!'
 
 permissions:
   tpa.tpa:
@@ -54,4 +60,7 @@ permissions:
     default: true
   tpa.tpt:
     description: 'Ignore requests globally'
+    default: true
+  tpa.tpc:
+    description: 'Cancel outgoing requests'
     default: true

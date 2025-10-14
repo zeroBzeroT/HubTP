@@ -5,8 +5,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
+import org.jetbrains.annotations.Nullable;
 
 public class RequestManager {
     private static final Map<Request, Long> pendingRequests = new ConcurrentHashMap<>();
@@ -19,18 +23,16 @@ public class RequestManager {
                 Player requester = Bukkit.getPlayer(request.requester().uuid());
                 if (requester != null) {
                     requester.sendMessage(
-                        Component.text("Your teleport request to ", NamedTextColor.GOLD)
-                            .append(Component.text(request.target().name()))
-                            .append(Component.text(" timed out."))
-                    );
+                            Component.text("Your teleport request to ", NamedTextColor.GOLD)
+                                    .append(Component.text(request.target().name()))
+                                    .append(Component.text(" timed out.")));
                 }
                 Player target = Bukkit.getPlayer(request.target().uuid());
                 if (target != null) {
                     target.sendMessage(
-                        Component.text("The teleport request from ", NamedTextColor.GOLD)
-                            .append(Component.text(request.requester().name()))
-                            .append(Component.text(" timed out."))
-                    );
+                            Component.text("The teleport request from ", NamedTextColor.GOLD)
+                                    .append(Component.text(request.requester().name()))
+                                    .append(Component.text(" timed out.")));
                 }
             }
         });
@@ -59,12 +61,15 @@ public class RequestManager {
     }
 
     public static void cancelRequestsByRequester(Player requester) {
-        for (Request request : pendingRequests.keySet()) {
-            if (request.requester().uuid().equals(requester.getUniqueId())) {
-                pendingRequests.remove(request);
-                // TODO: cancel info message
-            }
-        }
+        cancelRequestsByRequesterInternal(requester, null, false);
+    }
+
+    public static List<Request> cancelAllRequestsByRequester(Player requester) {
+        return cancelRequestsByRequesterInternal(requester, null, true);
+    }
+
+    public static List<Request> cancelRequestsByRequester(Player requester, String targetName) {
+        return cancelRequestsByRequesterInternal(requester, targetName, true);
     }
 
     public static boolean isRequestActive(Player target, Player requester) {
@@ -83,5 +88,35 @@ public class RequestManager {
             }
         }
         return false;
+    }
+
+    private static List<Request> cancelRequestsByRequesterInternal(Player requester, @Nullable String targetName,
+            boolean notifyTargets) {
+        List<Request> toCancel = pendingRequests.keySet().stream()
+                .filter(request -> request.requester().uuid().equals(requester.getUniqueId()))
+                .filter(request -> targetName == null || request.target().name().equalsIgnoreCase(targetName))
+                .collect(Collectors.toList());
+
+        if (toCancel.isEmpty()) {
+            return List.of();
+        }
+
+        Component targetMessage = Component.text(requester.getName(), NamedTextColor.GOLD)
+                .append(Component.text(" cancelled their teleport request."));
+
+        for (Request request : toCancel) {
+            pendingRequests.remove(request);
+
+            if (!notifyTargets) {
+                continue;
+            }
+
+            Player target = Bukkit.getPlayer(request.target().uuid());
+            if (target != null) {
+                target.sendMessage(targetMessage);
+            }
+        }
+
+        return List.copyOf(toCancel);
     }
 }
