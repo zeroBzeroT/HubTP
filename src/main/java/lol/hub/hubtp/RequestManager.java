@@ -95,7 +95,7 @@ public class RequestManager {
         List<Request> toCancel = pendingRequests.keySet().stream()
                 .filter(request -> request.requester().uuid().equals(requester.getUniqueId()))
                 .filter(request -> targetName == null || request.target().name().equalsIgnoreCase(targetName))
-                .collect(Collectors.toList());
+                .toList();
 
         if (toCancel.isEmpty()) {
             return List.of();

@@ -44,7 +44,7 @@ public class CancelCmd extends TpCommand {
             return;
         }
 
-        String resolvedTargetName = cancelled.get(0).target().name();
+        String resolvedTargetName = cancelled.getFirst().target().name();
         commandSender.sendMessage(
                 Component.text("Cancelled teleport request to ", NamedTextColor.GOLD)
                         .append(Component.text(resolvedTargetName, NamedTextColor.GOLD))

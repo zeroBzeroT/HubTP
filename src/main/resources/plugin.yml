@@ -2,8 +2,7 @@ name: HubTP
 version: @VERSION@
 description: @DESCRIPTION@
 website: "https://github.com/zeroBzeroT/HubTP/"
-author: 'nothub'
-authors: [ 'AlexProgrammerDE', 'MaybeEther', 'SooStrator', 'bierdosenhalter' ]
+authors: [ 'nothub', 'AlexProgrammerDE', 'MaybeEther', 'SooStrator', 'bierdosenhalter', 'v0ee' ]
 main: 'lol.hub.hubtp.Plugin'
 api-version: '1.20'
 

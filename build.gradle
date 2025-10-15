@@ -1,12 +1,18 @@
 plugins {
-    id 'java'
-    id 'xyz.jpenilla.run-paper' version '2.3.1'
+    id 'java-library'
     id 'io.github.goooler.shadow' version '8.1.8'
+    id 'xyz.jpenilla.run-paper' version '3.0.1'
 }
 
 group = 'lol.hub'
-version = '4.0.4'
+version = pluginVersion
 description = 'Minecraft self-service teleport requests'
+
+ext {
+    minecraftVersion = project.findProperty('minecraftVersion') ?: '1.20.4'
+    javaVersion = JavaVersion.toVersion(project.findProperty('javaVersion') ?: '21')
+    pluginVersion = project.findProperty('pluginVersion') ?: '1.0.0'
+}
 
 repositories {
     mavenCentral()
@@ -22,7 +28,7 @@ repositories {
     }
     maven {
         // FoliaLib
-        url = 'https://nexuslite.gcnt.net/repos/other/'
+        url = 'https://repo.tcoded.com/releases/'
         content {
             includeGroup 'com.tcoded'
         }
@@ -32,26 +38,27 @@ repositories {
 dependencies {
     // paper api
     // https://jd.papermc.io/paper/1.20/
-    compileOnly group: 'io.papermc.paper', name: 'paper-api', version: "${project.minecraft_version}-R0.1-SNAPSHOT"
+    compileOnly group: 'io.papermc.paper', name: 'paper-api', version: "${minecraftVersion}-R0.1-SNAPSHOT"
 
     // folia api
     // https://jd.papermc.io/folia/1.20/
-    //compileOnly group: 'dev.folia', name: 'folia-api', version: "${project.minecraft_version}-R0.1-SNAPSHOT"
+    //compileOnly group: 'dev.folia', name: 'folia-api', version: "${minecraftVersion}-R0.1-SNAPSHOT"
 
     // https://github.com/TechnicallyCoded/FoliaLib
-    shadow group: 'com.tcoded', name: 'FoliaLib', version: "0.4.2"
+    shadow group: 'com.tcoded', name: 'FoliaLib', version: "0.5.1"
 
     // Other dependencies
     shadow 'org.bstats:bstats-bukkit:3.1.0'
 }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
 }
+
 tasks.withType(JavaCompile).configureEach {
-    it.sourceCompatibility = it.targetCompatibility = JavaVersion.toVersion(21)
-    it.options.release = 21
-    it.options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
+    options.release = sourceCompatibility.toInteger()
 }
 
 processResources {
@@ -65,29 +72,30 @@ processResources {
 // https://imperceptiblethoughts.com/shadow/
 shadowJar {
     configurations = [project.configurations.shadow]
-    archiveFileName = "${project.name}-${project.version}+${project.minecraft_version}.jar"
+    archiveFileName = "${project.name}-${project.version}+${minecraftVersion}.jar"
     destinationDirectory = layout.buildDirectory.dir('dist')
 
-    relocate 'org.bstats', 'com.krazzzzymonkey.cloudanarchycore.bstats'
-    relocate 'com.tcoded', 'com.krazzzzymonkey.cloudanarchycore.tcoded'
+    relocate 'org.bstats', 'lol.hub.bstats'
+    relocate 'com.tcoded', 'lol.hub.tcoded'
 
     // delete unshaded jar
     doLast {
         file(jar.archiveFile).delete()
     }
 }
-build.finalizedBy(shadowJar)
+tasks.named('build') { finalizedBy(shadowJar) }
 
 tasks {
     runServer {
-        runDirectory = layout.projectDirectory.dir('run')
-        minecraftVersion(project.minecraft_version)
+        runDirectory = project.layout.projectDirectory.dir('run')
+        minecraftVersion(minecraftVersion)
         dependsOn('build')
         systemProperty('com.mojang.eula.agree', 'true')
         downloadPlugins {
-            url("https://github.com/ViaVersion/ViaBackwards/releases/download/5.3.2/ViaBackwards-5.3.2.jar")
-            url("https://github.com/ViaVersion/ViaVersion/releases/download/5.3.2/ViaVersion-5.3.2.jar")
-            url("https://github.com/dmulloy2/ProtocolLib/releases/download/5.3.0/ProtocolLib.jar")
+            url("https://github.com/ViaVersion/ViaBackwards/releases/download/5.5.0/ViaBackwards-5.5.0.jar")
+            url("https://github.com/ViaVersion/ViaVersion/releases/download/5.5.0/ViaVersion-5.5.0.jar")
+            url("https://github.com/dmulloy2/ProtocolLib/releases/download/5.4.0/ProtocolLib.jar")
+            url("https://ci.codemc.io/job/Updated-NoCheatPlus/job/Updated-NoCheatPlus/198/artifact/target/NoCheatPlus.jar")
         }
     }
 }

@@ -151,7 +151,7 @@ public class Plugin extends JavaPlugin {
      */
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command,
-            @NotNull String commandLabel, String[] args) {
+            @NotNull String commandLabel, String @NotNull [] args) {
         // Stop console access
         if (!(commandSender instanceof Player sender)) {
             Log.warn("Ignoring command executed by non-player sender: " + commandSender.getName());
