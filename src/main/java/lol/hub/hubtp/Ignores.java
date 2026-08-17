@@ -60,6 +60,7 @@ public final class Ignores {
     /**
      * @return true: success, false: maximum ignores reached
      */
+    // this reads/writes the full file on every /tpi ...probably should be changed in the future
     public static boolean set(UUID player, UUID target, boolean ignore) {
         Set<UUID> set = load(player);
 
