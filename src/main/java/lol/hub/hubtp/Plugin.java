@@ -227,36 +227,43 @@ public class Plugin extends JavaPlugin {
         String requesterName = tpRequester.getName();
         Log.info("Teleporting " + requesterName + " to " + tpTarget.getName());
 
-        // /tpy runs on tpTarget's region; hop to tpRequester's region so
-        // getVehicle() and getNearbyEntities() are region-safe
-        this.foliaLib.getScheduler().runAtEntity(tpRequester, task -> {
-            boolean freeSeat = Config.teleportIntoFreeSeat()
-                    && tpRequester.getVehicle() == null
-                    && tpTarget.getVehicle() instanceof Vehicle targetVehicle
-                    && isDriverOf(tpTarget, targetVehicle)
-                    && targetVehicle.getPassengers().size() < maxPassengersFor(targetVehicle);
-            boolean leashScan = Config.includeLeashed() && shouldTpLeashed(tpTarget, tpRequester);
+        this.foliaLib.getScheduler().runAtEntity(tpRequester, requesterTask -> {
+            boolean freeSeatCandidate = tpRequester.getVehicle() == null
+                    && Config.teleportIntoFreeSeat()
+                    && tpTarget.getVehicle() != null;
 
-            if (freeSeat) {
-                teleportIntoFreeSeat(tpTarget, tpRequester,
-                        (Vehicle) tpTarget.getVehicle());
-            } else if (leashScan) {
-                List<LivingEntity> leashed = tpRequester.getWorld()
-                        .getNearbyEntities(tpRequester.getLocation(), 16, 16, 16).stream()
-                        .filter(e -> e instanceof LivingEntity)
-                        .map(e -> (LivingEntity) e)
-                        .filter(LivingEntity::isLeashed)
-                        .filter(e -> e.getLeashHolder() != null
-                                && leashHolderMatches(e, tpRequester))
-                        .toList();
-                for (LivingEntity mob : leashed) {
-                    teleportLeashedMob(mob, tpTarget.getLocation());
-                }
-                doTeleportAndNotify(tpTarget, tpRequester);
-            } else {
-                doTeleportAndNotify(tpTarget, tpRequester);
+            if (!freeSeatCandidate) {
+                doLeashScanAndTeleport(tpTarget, tpRequester);
+                return;
             }
+            this.foliaLib.getScheduler().runAtEntity(tpTarget, targetTask -> {
+                Entity targetVeh = tpTarget.getVehicle();
+                if (targetVeh instanceof Vehicle targetVehicle
+                        && isDriverOf(tpTarget, targetVehicle)
+                        && targetVehicle.getPassengers().size() < maxPassengersFor(targetVehicle)) {
+                    teleportIntoFreeSeat(tpTarget, tpRequester, targetVehicle);
+                } else {
+                    doLeashScanAndTeleport(tpTarget, tpRequester);
+                }
+            });
         });
+    }
+
+    private void doLeashScanAndTeleport(Player tpTarget, Player tpRequester) {
+        if (Config.includeLeashed() && shouldTpLeashed(tpTarget, tpRequester)) {
+            List<LivingEntity> leashed = tpRequester.getWorld()
+                    .getNearbyEntities(tpRequester.getLocation(), 16, 16, 16).stream()
+                    .filter(e -> e instanceof LivingEntity)
+                    .map(e -> (LivingEntity) e)
+                    .filter(LivingEntity::isLeashed)
+                    .filter(e -> e.getLeashHolder() != null
+                            && leashHolderMatches(e, tpRequester))
+                    .toList();
+            for (LivingEntity mob : leashed) {
+                teleportLeashedMob(mob, tpTarget.getLocation());
+            }
+        }
+        doTeleportAndNotify(tpTarget, tpRequester);
     }
 
     private boolean leashHolderMatches(LivingEntity mob, Player requester) {
