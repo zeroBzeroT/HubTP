@@ -15,21 +15,24 @@ import org.jetbrains.annotations.Nullable;
 public class RequestManager {
     private static final Map<Request, Long> pendingRequests = new ConcurrentHashMap<>();
 
-    static void clearOldRequests(int timeoutValue) {
+    static void clearOldRequests(Plugin plugin, int timeoutValue) {
         long time = System.currentTimeMillis();
         pendingRequests.forEach((request, requestTime) -> {
             if (((time - requestTime) / 1000L) > timeoutValue) {
                 pendingRequests.remove(request);
                 Player requester = Bukkit.getPlayer(request.requester().uuid());
                 if (requester != null) {
-                    requester.sendMessage(
+                    plugin.sendOnRegion(requester,
                             Component.text("Your teleport request to ", NamedTextColor.GOLD)
                                     .append(Component.text(request.target().name()))
                                     .append(Component.text(" timed out.")));
                 }
+                // skip target's timeout message if they're ignoring the requester.
+                // They never saw the request, so a timeout notification would be weird.
                 Player target = Bukkit.getPlayer(request.target().uuid());
-                if (target != null) {
-                    target.sendMessage(
+                if (target != null
+                        && !Ignores.get(target.getUniqueId(), request.requester().uuid())) {
+                    plugin.sendOnRegion(target,
                             Component.text("The teleport request from ", NamedTextColor.GOLD)
                                     .append(Component.text(request.requester().name()))
                                     .append(Component.text(" timed out.")));

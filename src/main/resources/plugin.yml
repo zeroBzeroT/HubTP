@@ -5,6 +5,7 @@ website: "https://github.com/zeroBzeroT/HubTP/"
 authors: [ 'nothub', 'AlexProgrammerDE', 'MaybeEther', 'SooStrator', 'bierdosenhalter', 'v0ee' ]
 main: 'lol.hub.hubtp.Plugin'
 api-version: '1.20'
+folia-supported: true
 
 commands:
   tpa:
