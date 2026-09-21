@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -411,7 +412,11 @@ public class Plugin extends JavaPlugin {
      * Checks if requests are blocked in the config for a specific player.
      */
     public boolean isRequestBlock(Player player) {
-        return this.getConfig().getBoolean("requests-blocked-" + player.getUniqueId());
+        return isRequestBlock(player.getUniqueId());
+    }
+
+    public boolean isRequestBlock(UUID uuid) {
+        return this.getConfig().getBoolean("requests-blocked-" + uuid);
     }
 
     /**

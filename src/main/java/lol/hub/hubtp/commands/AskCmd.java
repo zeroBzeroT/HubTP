@@ -16,13 +16,80 @@ public class AskCmd extends TpCommand {
 
     @Override
     public void run(Player commandSender, String targetName) {
+        if (Config.spawnTpDeny() && Players.isAtSpawn(commandSender)) {
+            Log.debug("Denying teleport request while in spawn area from " + commandSender.getName() + " to " + targetName + ".");
+
+            commandSender.sendMessage(
+                Component.text("You are not allowed to teleport while in the spawn area!", NamedTextColor.RED)
+            );
+            return;
+        }
+
+        if (plugin.isRequestBlock(commandSender)) {
+            commandSender.sendMessage(
+                Component.text("Unable to send teleport requests while ignoring incoming requests!", NamedTextColor.RED)
+            );
+            return;
+        }
+
+        if (!Config.allowMultiTargetRequest() && RequestManager.isRequestActiveByRequester(commandSender)) {
+            commandSender.sendMessage(
+                Component.text("Please wait for your existing request to be accepted or denied.",
+                    NamedTextColor.RED)
+            );
+            return;
+        }
+
         var target = Players.getOnlinePlayer(plugin.getServer(), targetName);
 
+        // an unreachable target still gets a request nobody delivers, so offline and vanished look alike
         if (target == null) {
+            var targetUuid = Players.getPlayerUUID(plugin.getServer(), targetName);
+
+            if (targetUuid != null) {
+                if (Ignores.get(targetUuid, commandSender.getUniqueId())) {
+                    commandSender.sendMessage(
+                        Component.text(targetName, NamedTextColor.RED)
+                            .append(Component.text(" is ignoring your tpa requests!"))
+                    );
+                    return;
+                }
+
+                if (Ignores.get(commandSender.getUniqueId(), targetUuid)) {
+                    commandSender.sendMessage(
+                        Component.text("You are ignoring ", NamedTextColor.RED)
+                            .append(Component.text(targetName))
+                            .append(Component.text(". Cannot send teleport requests."))
+                    );
+                    return;
+                }
+
+                if (plugin.isRequestBlock(targetUuid)) {
+                    commandSender.sendMessage(
+                        Component.text(targetName, NamedTextColor.RED)
+                            .append(Component.text(" is currently not accepting any teleport requests!"))
+                    );
+                    return;
+                }
+
+                var targetData = new PlayerData(targetName, targetUuid);
+
+                if (RequestManager.isRequestActive(targetData, commandSender)) {
+                    commandSender.sendMessage(
+                        Component.text("Please wait for ", NamedTextColor.RED)
+                            .append(Component.text(targetName))
+                            .append(Component.text(" to accept or deny your request."))
+                    );
+                    return;
+                }
+
+                RequestManager.addRequest(targetData, commandSender);
+            }
+
             commandSender.sendMessage(
-                Component.text("Player ", NamedTextColor.RED)
+                Component.text("Request sent to ", NamedTextColor.GOLD)
                     .append(Component.text(targetName))
-                    .append(Component.text(" is not online."))
+                    .append(Component.text("."))
             );
             return;
         }
@@ -44,26 +111,10 @@ public class AskCmd extends TpCommand {
             return;
         }
 
-        if (Config.spawnTpDeny() && Players.isAtSpawn(commandSender)) {
-            Log.debug("Denying teleport request while in spawn area from " + commandSender.getName() + " to " + target.getName() + ".");
-
-            commandSender.sendMessage(
-                Component.text("You are not allowed to teleport while in the spawn area!", NamedTextColor.RED)
-            );
-            return;
-        }
-
         if (plugin.isRequestBlock(target)) {
             commandSender.sendMessage(
                 Component.text(target.getName(), NamedTextColor.RED)
                     .append(Component.text(" is currently not accepting any teleport requests!"))
-            );
-            return;
-        }
-
-        if (plugin.isRequestBlock(commandSender)) {
-            commandSender.sendMessage(
-                Component.text("Unable to send teleport requests while ignoring incoming requests!", NamedTextColor.RED)
             );
             return;
         }
@@ -85,14 +136,6 @@ public class AskCmd extends TpCommand {
                 Component.text("Please wait for ", NamedTextColor.RED)
                     .append(Component.text(target.getName()))
                     .append(Component.text(" to accept or deny your request."))
-            );
-            return;
-        }
-
-        if (!Config.allowMultiTargetRequest() && RequestManager.isRequestActiveByRequester(commandSender)) {
-            commandSender.sendMessage(
-                Component.text("Please wait for your existing request to be accepted or denied.",
-                    NamedTextColor.RED)
             );
             return;
         }

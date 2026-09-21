@@ -39,11 +39,19 @@ public class RequestManager {
     }
 
     public static void addRequest(Player target, Player requester) {
+        addRequest(PlayerData.of(target), requester);
+    }
+
+    public static void addRequest(PlayerData target, Player requester) {
         removeRequests(target, requester);
         pendingRequests.put(Request.of(target, requester), System.currentTimeMillis());
     }
 
     public static void removeRequests(Player target, Player requester) {
+        removeRequests(PlayerData.of(target), requester);
+    }
+
+    public static void removeRequests(PlayerData target, Player requester) {
         for (Request request : pendingRequests.keySet()) {
             if (request.isSamePlayers(target, requester)) {
                 pendingRequests.remove(request);
@@ -73,6 +81,10 @@ public class RequestManager {
     }
 
     public static boolean isRequestActive(Player target, Player requester) {
+        return isRequestActive(PlayerData.of(target), requester);
+    }
+
+    public static boolean isRequestActive(PlayerData target, Player requester) {
         for (Request request : pendingRequests.keySet()) {
             if (request.isSamePlayers(target, requester)) {
                 return true;
