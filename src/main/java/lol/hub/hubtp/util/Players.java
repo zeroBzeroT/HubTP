@@ -11,7 +11,14 @@ import java.util.UUID;
 public class Players {
 
     public static Player getOnlinePlayer(Server server, String name) {
-        return server.getOnlinePlayers().stream().filter(p -> p.getName().equals(name)).findAny().orElse(null);
+        return server.getOnlinePlayers().stream().filter(p -> p.getName().equals(name) && !isVanished(p)).findAny().orElse(null);
+    }
+
+    // vanished players count as offline
+    private static boolean isVanished(Player player) {
+        return player.hasMetadata("vanished")
+            && !player.getMetadata("vanished").isEmpty()
+            && player.getMetadata("vanished").get(0).asBoolean();
     }
 
     public static UUID getPlayerUUID(Server server, String name) {
