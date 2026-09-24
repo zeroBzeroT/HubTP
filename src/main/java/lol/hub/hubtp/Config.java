@@ -18,6 +18,8 @@ public final class Config {
     private static boolean includeLeashed;
     private static boolean includeLeashedInterdimensional;
     private static boolean teleportMountedEntities;
+    private static boolean teleportIntoFreeSeat;
+    private static boolean teleportLeashedOfPassengers;
     private static Path ignoresPath;
     private static boolean debug;
 
@@ -38,8 +40,10 @@ public final class Config {
         config.addDefault("tp-delay-seconds", 0);
         config.addDefault("movement-check", false);
         config.addDefault("include-leashed", true);
-        config.addDefault("include-leashed-interdimensional", false);
+        config.addDefault("include-leashed-interdimensional", true);
         config.addDefault("teleport-mounted-entities", true);
+        config.addDefault("teleport-into-free-seat", true);
+        config.addDefault("teleport-leashed-of-passengers", true);
         config.addDefault("ignores-path", Ignores.defaultPath.apply(plugin));
         config.addDefault("debug", false);
         config.addDefault("bStats", true);
@@ -83,6 +87,10 @@ public final class Config {
         includeLeashedInterdimensional = config.getBoolean("include-leashed-interdimensional");
 
         teleportMountedEntities = config.getBoolean("teleport-mounted-entities");
+
+        teleportIntoFreeSeat = config.getBoolean("teleport-into-free-seat");
+
+        teleportLeashedOfPassengers = config.getBoolean("teleport-leashed-of-passengers");
 
         // noinspection DataFlowIssue
         if (config.getString("ignores-path") == null || config.getString("ignores-path").isBlank()) {
@@ -155,6 +163,16 @@ public final class Config {
     public static boolean teleportMountedEntities() {
         assertInitialized();
         return teleportMountedEntities;
+    }
+
+    public static boolean teleportIntoFreeSeat() {
+        assertInitialized();
+        return teleportIntoFreeSeat;
+    }
+
+    public static boolean teleportLeashedOfPassengers() {
+        assertInitialized();
+        return teleportLeashedOfPassengers;
     }
 
     public static Path ignoresPath() {

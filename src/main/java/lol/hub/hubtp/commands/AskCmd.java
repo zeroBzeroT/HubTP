@@ -27,14 +27,6 @@ public class AskCmd extends TpCommand {
             return;
         }
 
-        if (Ignores.get(target.getUniqueId(), commandSender.getUniqueId())) {
-            commandSender.sendMessage(
-                Component.text(target.getName(), NamedTextColor.RED)
-                    .append(Component.text(" is ignoring your tpa requests!"))
-            );
-            return;
-        }
-
         if (Ignores.get(commandSender.getUniqueId(), target.getUniqueId())) {
             commandSender.sendMessage(
                 Component.text("You are ignoring ", NamedTextColor.RED)
@@ -103,27 +95,31 @@ public class AskCmd extends TpCommand {
                 .append(Component.text("."))
         );
 
-        target.sendMessage(
-            Component.text(commandSender.getName())
-                .append(Component.text(" wants to teleport to you. ", NamedTextColor.GOLD))
-                .append(
-                    Component.text("[ACCEPT]", NamedTextColor.GREEN)
-                        .hoverEvent(Component.text("Accept the teleport").asHoverEvent())
-                        .clickEvent(ClickEvent.suggestCommand("/tpy " + commandSender.getName()))
-                )
-                .append(Component.text(" ", NamedTextColor.GOLD))
-                .append(
-                    Component.text("[DENY]", NamedTextColor.RED)
-                        .hoverEvent(Component.text("Deny the teleport").asHoverEvent())
-                        .clickEvent(ClickEvent.suggestCommand("/tpn " + commandSender.getName()))
-                )
-                .append(Component.text(" ", NamedTextColor.GOLD))
-                .append(
-                    Component.text("[IGNORE]", NamedTextColor.GRAY)
-                        .hoverEvent(Component.text("Ignore the requester").asHoverEvent())
-                        .clickEvent(ClickEvent.suggestCommand("/tpi " + commandSender.getName()))
-                )
-        );
+        // if target is ignoring the requester, skip the notification but still queue
+        // the request. it'll time out normally and the requester won't know.
+        if (!Ignores.get(target.getUniqueId(), commandSender.getUniqueId())) {
+            target.sendMessage(
+                Component.text(commandSender.getName())
+                    .append(Component.text(" wants to teleport to you. ", NamedTextColor.GOLD))
+                    .append(
+                        Component.text("[ACCEPT]", NamedTextColor.GREEN)
+                            .hoverEvent(Component.text("Accept the teleport").asHoverEvent())
+                            .clickEvent(ClickEvent.suggestCommand("/tpy " + commandSender.getName()))
+                    )
+                    .append(Component.text(" ", NamedTextColor.GOLD))
+                    .append(
+                        Component.text("[DENY]", NamedTextColor.RED)
+                            .hoverEvent(Component.text("Deny the teleport").asHoverEvent())
+                            .clickEvent(ClickEvent.suggestCommand("/tpn " + commandSender.getName()))
+                    )
+                    .append(Component.text(" ", NamedTextColor.GOLD))
+                    .append(
+                        Component.text("[IGNORE]", NamedTextColor.GRAY)
+                            .hoverEvent(Component.text("Ignore the requester").asHoverEvent())
+                            .clickEvent(ClickEvent.suggestCommand("/tpi " + commandSender.getName()))
+                    )
+            );
+        }
 
         RequestManager.addRequest(target, commandSender);
     }
